@@ -25,11 +25,11 @@ fig = plt.figure(figsize=(7,5))
 ax = fig.add_subplot(111, projection='3d')
 
 fig.patch.set_facecolor('white')
-ax.scatter(Xax, Yax, Zax, s=40)
+ax.scatter(Xax, Yax, Zax, s=40, c=["k" if data[i][15]==0 else 'r' for i in range(len(data))])
 
 # labels
 for i in range(len(Xax)):
-  ax.text(Xax[i], Yax[i], Zax[i], ', '.join(attributes[i].astype('str'))+" "+str(data[i][15]==1), size=8, zorder=1, color='k') 
+  ax.text(Xax[i], Yax[i], Zax[i], ', '.join(attributes[i].astype('str')), size=8, zorder=1, color='k') 
   
 # for loop ends
 ax.set_xlabel(', '.join(np.round(pca.components_[0], decimals=3).astype('str')), fontsize=14)
