@@ -9,6 +9,9 @@ data = np.genfromtxt('samples.csv', skip_header=1, delimiter=',')
 attributes = data[:, :4]
 results = data[:, 4:]
 
+mean = np.mean(attributes, axis=0)
+print("Mean", mean)
+
 scaler = StandardScaler()
 scaler.fit(attributes) 
 attributes_scaled = scaler.transform(attributes)
@@ -36,7 +39,14 @@ ax.set_xlabel(', '.join(np.round(pca.components_[0], decimals=3).astype('str')),
 ax.set_ylabel(', '.join(np.round(pca.components_[1], decimals=3).astype('str')), fontsize=14)
 ax.set_zlabel(', '.join(np.round(pca.components_[2], decimals=3).astype('str')), fontsize=14)
 
-print(pca.components_)
 
 ax.legend()
 plt.show()
+
+pca_data = np.concatenate((np.array([[1., 1., 1., 1.]]), pca.components_))
+
+inv = np.linalg.inv(pca_data)
+suggested = inv[0]*17+mean
+suggested[suggested<0] = 0
+print(pca.components_)
+print("Suggested test", suggested, " total", np.sum(suggested))
