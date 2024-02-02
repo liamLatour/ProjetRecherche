@@ -9,20 +9,29 @@ data = np.genfromtxt('samples.csv', skip_header=1, delimiter=',')
 attributes = data[:, :4]
 results = data[:, 4:]
 
+boundaries = np.array([[100, 0, 0, 0], [0, 100, 0, 0], [0, 0, 100, 0], [0, 0, 0, 100],
+                                [100, 100, 0, 0], [100, 0, 100, 0], [100, 0, 0, 100],
+                                [0, 100, 100, 0], [0, 100, 0, 100],
+                                [0, 0, 100, 100],
+                                [0, 100, 100, 100], [100, 0, 100, 100], [100, 100, 0, 100], [100, 100, 100, 0]])
+
 mean = np.mean(attributes, axis=0)
 print("Mean", mean)
 
-scaler = StandardScaler()
-scaler.fit(attributes) 
-attributes_scaled = scaler.transform(attributes)
+# maybe use scaler
 
 pca = PCA(n_components=3)
-pca.fit(attributes_scaled)
-attributes_pca = pca.transform(attributes_scaled) 
+pca.fit(attributes)
+attributes_pca = pca.transform(attributes) 
+boundaries_pca = pca.transform(boundaries)
 
 Xax = attributes_pca[:,0]
 Yax = attributes_pca[:,1]
 Zax = attributes_pca[:,2]
+
+Xax_b = boundaries_pca[:,0]
+Yax_b = boundaries_pca[:,1]
+Zax_b = boundaries_pca[:,2]
 
 fig = plt.figure(figsize=(7,5))
 ax = fig.add_subplot(111, projection='3d')
@@ -33,6 +42,12 @@ ax.scatter(Xax, Yax, Zax, s=40, c=["k" if data[i][15]==0 else 'r' for i in range
 # labels
 for i in range(len(Xax)):
   ax.text(Xax[i], Yax[i], Zax[i], ', '.join(attributes[i].astype('str')), size=8, zorder=1, color='k') 
+  
+ax.scatter(Xax_b, Yax_b, Zax_b, s=5, c="b")
+
+# labels
+for i in range(len(Xax_b)):
+  ax.text(Xax_b[i], Yax_b[i], Zax_b[i], ', '.join(boundaries[i].astype('str')), size=6, zorder=1, color='k') 
   
 # for loop ends
 ax.set_xlabel(', '.join(np.round(pca.components_[0], decimals=3).astype('str')), fontsize=14)
