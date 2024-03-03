@@ -20,7 +20,9 @@
   - GPC (Gaussian Process Classifier)
   - Bayesian logistic regression
 
-## Bibliographie
 
+## Todo
 
+Dessiner frontière du kriegage avec raycasting depuis l'origine et binary search
+Minimize problem of boundary + max variance (good candidate point) 
 
