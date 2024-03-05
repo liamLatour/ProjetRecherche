@@ -5,19 +5,29 @@ import PySimpleGUI as sg
 
 
 data = Data()
-model = Model('native')
+model = Model()
 
-x = data.get_x()
-y = data.get_fractured()
+x = data.get_x_2d()
+y = data.get_fractured(omit_200_400=True)
 model.train(x, y)
 
 visualisation = Visualisation(model, data)
 
 options_list_column = [
-    [sg.Checkbox('Show boundary', key='-BOUND_CB-', enable_events=True)],
-    [sg.Checkbox('Show original', key='-ORIG_CB-', enable_events=True)],
-    [sg.Checkbox('Show grid', default=True, key='-GRID_CB-', enable_events=True)],
-    [sg.Checkbox('Show candidates', key='-CAND_CB-', enable_events=True)],
+    [sg.Checkbox('Show boundary',   key='-BOUND_CB-',               enable_events=True),
+    sg.Checkbox('Show original',   key='-ORIG_CB-',                enable_events=True),],
+    [sg.Checkbox('Show grid',       key='-GRID_CB-', default=True,  enable_events=True),
+    sg.Checkbox('Show candidate(s)', key='-CAND_CB-',                enable_events=True)],
+    [sg.HorizontalSeparator(color='black')],
+    [
+      sg.Radio('Expected Error Reduction',  group_id=1, key='-EE_QU-', enable_events=True, default=True),
+      sg.Radio('Uncertainty Sampling',      group_id=1, key='-US_QU-', enable_events=True)
+    ],
+    [
+      sg.Radio('Gaussian Process',  group_id=2, key='-GP_MOD-', enable_events=True, default=True),
+      sg.Radio('Random Forest',     group_id=2, key='-RF_MOD-', enable_events=True),
+      sg.Radio('Support Vector',    group_id=2, key='-SV_MOD-', enable_events=True)
+    ],
 ]
 
 plot_viewer_column = [
@@ -45,12 +55,11 @@ window = sg.Window(
 )
 
 # Add the plot to the window
-fig = visualisation.generate_fig()
+fig = visualisation.generate_fig_2d()
 visualisation.draw_figure(window["-CANVAS-"].TKCanvas, fig)
 
 while True:
   event, values = window.read()
-  print(event, values)
   
   match event:
     case sg.WIN_CLOSED | "Ok":
@@ -63,8 +72,25 @@ while True:
       visualisation.config['grid'] = values['-GRID_CB-']
     case '-CAND_CB-':
       visualisation.config['candidate'] = values['-CAND_CB-']
+    case '-EE_QU-':
+      model.config['query'] = 'EE'
+      model.train(x, y)
+    case '-US_QU-':
+      model.config['query'] = 'US'
+      model.train(x, y)
+    case '-GP_MOD-':
+      model.config['model'] = 'GP'
+      model.train(x, y)
+    case '-RF_MOD-':
+      model.config['model'] = 'RF'
+      model.train(x, y)
+    case '-SV_MOD-':
+      model.config['model'] = 'SV'
+      model.train(x, y)
+    case _:
+      print(event, values)
   
-  fig = visualisation.generate_fig()
+  fig = visualisation.generate_fig_2d()
   visualisation.draw_figure(window["-CANVAS-"].TKCanvas, fig)
   
 window.close()

@@ -1,15 +1,7 @@
-kriegage de base (regression sur probabilité) avec incertitude sur les points (non interpolant)
-optim hyperparam en maximisant densité de prob marginale
-essayé de le borné
-vérifier si maximiser variance revient a maximiser l'éspérance de minimisation de variance
-
 garder version 3d
-remplacer 200-400 par somme dans les données
-lower 90-80 breaking points
 
--28/02 -> biblio
 -05/03 -> 2D(visu)-3D (sum), GP, Active learning, SVM (kernel), RF
 -10/03 -> Article
--18-20 -> O5
+-18-20/03 -> O5
 
 Prior to 13/03 -> Active learning (single->multi point/12)
