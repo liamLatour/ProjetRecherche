@@ -14,9 +14,9 @@ model.train(x, y)
 visualisation = Visualisation(model, data)
 
 options_list_column = [
-    [sg.Checkbox('Show boundary',   key='-BOUND_CB-',               enable_events=True),
-    sg.Checkbox('Show original',   key='-ORIG_CB-',                enable_events=True),],
-    [sg.Checkbox('Show grid',       key='-GRID_CB-', default=True,  enable_events=True),
+    [sg.Checkbox('Show boundary',   key='-BOUND_CB-', default=True,              enable_events=True),
+    sg.Checkbox('Show original',   key='-ORIG_CB-',  default=True,              enable_events=True),],
+    [sg.Checkbox('Show grid',       key='-GRID_CB-',   enable_events=True),
     sg.Checkbox('Show candidate(s)', key='-CAND_CB-',                enable_events=True)],
     [sg.HorizontalSeparator(color='black')],
     [

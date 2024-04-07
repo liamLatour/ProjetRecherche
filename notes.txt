@@ -1,7 +1,0 @@
-garder version 3d
-
--05/03 -> 2D(visu)-3D (sum), GP, Active learning, SVM (kernel), RF
--10/03 -> Article
--18-20/03 -> O5
-
-Prior to 13/03 -> Active learning (single->multi point/12)

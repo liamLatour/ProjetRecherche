@@ -13,9 +13,9 @@ class Visualisation():
     self.model = model
     self.data = data
     self.config = {
-      "bounds": False,
-      "original": False,
-      "grid": True,
+      "bounds": True,
+      "original": True,
+      "grid": False,
       "candidate": False
     }
   
@@ -33,22 +33,23 @@ class Visualisation():
     x_ax = x[:,0]
     y_ax = x[:,1]
 
-    fig = Figure(figsize=(5, 4), dpi=100)
+    fig = Figure(figsize=(10, 8), dpi=100)
     ax = fig.add_subplot(111)
     if len(x) == 0:
       return fig
 
-    size = size/np.min(size)
+    size = 40 #size/np.min(size)
 
     fig.patch.set_facecolor('white')    
     ax.scatter(x_ax, y_ax, s=size, c=["r" if y[i]==1 else 'k' for i in range(len(y))])
     
     if type(special) == type(np.array([])):
-      ax.scatter(special[:,0], special[:,1], s=3, c="b")
+      ax.scatter(special[:,0], special[:,1], s=40, c="b")
       for point in special:
         ax.annotate(
           str(round(point[0], 2))+'/'+str(round(point[1], 2)),
-          (point[0], point[1])
+          (point[0], point[1]),
+          fontsize=15
         )
 
     if self.config['bounds']:
@@ -62,6 +63,9 @@ class Visualisation():
                  colors='black',
                  linestyles='dashed',
                  linewidths=1)
+      
+      #surf = ax.contourf(grid_x, grid_y, prediction)
+      #fig.colorbar(surf)
 
     ax.set_xlabel('25-100', fontsize=14)
     ax.set_ylabel('100-200', fontsize=14)
@@ -106,7 +110,7 @@ class Visualisation():
     if self.config['grid']:
       points = np.concatenate((points, self.generate_pyramide_points(10)))
     if self.config['bounds']:
-      points = np.concatenate((points, self.generate_boundary(5)))
+      points = np.concatenate((points, self.generate_boundary(15)))
 
     if len(points) > 0:
       y_pred, _ = self.model.predict(points)
@@ -115,7 +119,7 @@ class Visualisation():
       y_pred = []
       y_prob = []
     
-    return self.display_3d(points, y_pred, y_prob)
+    return self.display_3d(points, [0 for _ in range(len(points))], [1 for _ in range(len(points))])#y_pred, y_prob)
   
   def generate_fig_2d(self):
     points = np.empty((0, 2))
@@ -124,9 +128,9 @@ class Visualisation():
     if self.config['original']:
       points = np.concatenate((points, self.data.get_x_2d()))
     if self.config['grid']:
-      points = np.concatenate((points, Visualisation.generate_triangle(10)))
+      points = np.concatenate((points, Visualisation.generate_triangle(30)))
     if self.config['candidate']:
-      special = self.model.best_candidate()
+      special = self.model.best_candidates()
     # if self.config['bounds']:
     #   points = np.concatenate((points, self.generate_boundary(5)))
 
@@ -140,14 +144,17 @@ class Visualisation():
     return self.display_2d(points, y_pred, y_prob, special)
   
   @staticmethod
-  def generate_triangle(n=3):
+  def generate_triangle(n=3, min_mix=0, max_mix=100, half=None):
     points = []
     
     step = 100/n
     
     for i in range(n+1):
       for j in range((n-i)+1):
-        points.append([i*step, j*step])
+        total = i*step + j*step
+        if total <= max_mix and min_mix <= total:
+          if half == None or (half and i<=j) or ((not half) and j<=i):
+            points.append([i*step, j*step])
     
     return np.array(points)
   

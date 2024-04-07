@@ -6,4 +6,5 @@
 *.out
 *.pdf
 *.gz
+*.toc
 *.fdb_latexmk
